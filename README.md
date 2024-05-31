@@ -28,3 +28,13 @@ INSERT INTO bank.transactions (client_id, type, amount, transaction_date) VALUES
 (2, 'credit', 1500.00, CURRENT_TIMESTAMP),
 (3, 'debit', 700.00, CURRENT_TIMESTAMP),
 (3, 'credit', 2000.00, CURRENT_TIMESTAMP);
+
+Alterando fkey transcation para deletar junto com cliente
+ALTER TABLE bank.transactions
+DROP CONSTRAINT transactions_client_id_fkey;
+
+ALTER TABLE bank.transactions
+ADD CONSTRAINT transactions_client_id_fkey
+FOREIGN KEY (client_id)
+REFERENCES bank.clients(id)
+ON DELETE CASCADE;
