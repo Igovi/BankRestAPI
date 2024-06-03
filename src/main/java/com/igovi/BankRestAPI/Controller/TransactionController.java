@@ -1,6 +1,7 @@
 package com.igovi.BankRestAPI.Controller;
 
 import com.igovi.BankRestAPI.Model.Client;
+import com.igovi.BankRestAPI.Model.ResponseMessage;
 import com.igovi.BankRestAPI.Model.Transaction;
 import com.igovi.BankRestAPI.Service.ClientService;
 import com.igovi.BankRestAPI.Service.TransactionService;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin(origins = "*")
 public class TransactionController {
 
     @Autowired
@@ -31,8 +33,8 @@ public class TransactionController {
         if (transaction.isPresent()) {
             return ResponseEntity.ok(transaction.get());
         } else {
-            String errorMessage = "Transaction with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Transaction with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 
@@ -43,13 +45,13 @@ public class TransactionController {
             return ResponseEntity.ok(transaction);
         } else {
             Client existingClient = clientService.checkClient(id);
-            String errorMessage = "";
+            ResponseMessage responseMessage = new ResponseMessage("");
             if(existingClient != null){
-                errorMessage = "Transactions for client ID " + id + " not found.";
+                responseMessage.setMessage("Transactions for client ID " + id + " not found.");
             }else {
-                errorMessage = "Client with ID " + id + " not found.";
+                responseMessage.setMessage("Client with ID"  + id +  "not found.");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 
@@ -70,21 +72,22 @@ public class TransactionController {
             return ResponseEntity.ok(savedTransaction);
 
         } else {
-            String errorMessage = "transaction with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Transaction with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
 
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         Transaction existingTransaction = transactionService.checkTransaction(id);
         if (existingTransaction != null) {
             transactionService.deleteTransaction(id);
-            return ResponseEntity.ok("Transaction with ID " + id + " deleted successfully.");
+            ResponseMessage responseMessage = new ResponseMessage("Transaction with ID " + id + " deleted successfully.");
+            return ResponseEntity.ok(responseMessage);
         }else{
-            String errorMessage = "Transaction with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Transaction with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 }

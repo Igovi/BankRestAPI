@@ -1,6 +1,7 @@
 package com.igovi.BankRestAPI.Controller;
 
 import com.igovi.BankRestAPI.Model.Client;
+import com.igovi.BankRestAPI.Model.ResponseMessage;
 import com.igovi.BankRestAPI.Service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clients")
+@CrossOrigin(origins = "*")
 public class ClientController {
 
     @Autowired
@@ -28,8 +30,8 @@ public class ClientController {
         if (client.isPresent()) {
             return ResponseEntity.ok(client.get());
         } else {
-            String errorMessage = "Client with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Client with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 
@@ -50,21 +52,22 @@ public class ClientController {
             return ResponseEntity.ok(savedClient);
 
         } else {
-            String errorMessage = "Client with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Client with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
 
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteClient(@PathVariable Long id) {
+    public ResponseEntity<?> deleteClient(@PathVariable Long id) {
         Client existingClient = clientService.checkClient(id);
         if (existingClient != null) {
             clientService.deleteClient(id);
-            return ResponseEntity.ok("Client with ID " + id + " deleted successfully.");
+            ResponseMessage responseMessage = new ResponseMessage("Client with ID " + id + " deleted successfully.");
+            return ResponseEntity.ok(responseMessage);
         }else{
-            String errorMessage = "Client with ID " + id + " not found.";
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            ResponseMessage responseMessage = new ResponseMessage("Client with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 }

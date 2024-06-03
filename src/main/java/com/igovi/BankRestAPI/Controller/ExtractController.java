@@ -2,6 +2,7 @@ package com.igovi.BankRestAPI.Controller;
 
 import com.igovi.BankRestAPI.Model.Client;
 import com.igovi.BankRestAPI.Model.Extract;
+import com.igovi.BankRestAPI.Model.ResponseMessage;
 import com.igovi.BankRestAPI.Model.Transaction;
 import com.igovi.BankRestAPI.Service.ClientService;
 import com.igovi.BankRestAPI.Service.ExtractService;
@@ -9,15 +10,13 @@ import com.igovi.BankRestAPI.Service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/extract")
+@CrossOrigin(origins = "*")
 public class ExtractController {
     @Autowired
     private TransactionService transactionService;
@@ -37,13 +36,13 @@ public class ExtractController {
             return ResponseEntity.ok(extract);
         } else {
             Client existingClient = clientService.checkClient(id);
-            String errorMessage = "";
+            ResponseMessage responseMessage = new ResponseMessage("");
             if(existingClient != null){
-                errorMessage = "Transactions for client ID " + id + " not found.";
+                responseMessage.setMessage("Transactions for client ID " + id + " not found.");
             }else {
-                errorMessage = "Client with ID " + id + " not found.";
+                responseMessage.setMessage("Client with ID"  + id +  "not found.");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
 
