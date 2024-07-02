@@ -9,7 +9,7 @@ CREATE TABLE bank.clients (
 
 CREATE TABLE bank.transactions (
     id SERIAL PRIMARY KEY,
-    client_id INT REFERENCES clients(id),
+    client_id INT REFERENCES bank.clients(id),
     type VARCHAR(10) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -38,3 +38,12 @@ ADD CONSTRAINT transactions_client_id_fkey
 FOREIGN KEY (client_id)
 REFERENCES bank.clients(id)
 ON DELETE CASCADE;
+
+CREATE TABLE bank."user" (
+id SERIAL PRIMARY KEY,
+userName VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO bank."user" (user_name, password) VALUES ('admin', 'admin');
+
