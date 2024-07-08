@@ -6,6 +6,9 @@ import com.igovi.BankRestAPI.Model.Transaction;
 import com.igovi.BankRestAPI.Service.ClientService;
 import com.igovi.BankRestAPI.Service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +26,10 @@ public class TransactionController {
     @Autowired
     private ClientService clientService;
     @GetMapping
-    public List<Transaction> getAllTransactions() {
-        return transactionService.getAllTransactions();
+    public ResponseEntity<Page<Transaction>> getAllTransactions( Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        Page<Transaction> transactions = transactionService.getAllTransactions(sortedPageable);
+        return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/{id}" )
